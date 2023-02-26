@@ -4,7 +4,7 @@ ManhwaRepo is a website that allows users to import books from certain scanlatio
 ### IN-PROGRESS:
 AsuraScans integration
 
-  -given manhwa link can get title, latest chapter, latest chapter link
+  -currently given manhwa link can get title, latest chapter, latest chapter link
 
 Supabase integration
 
