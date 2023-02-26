@@ -11,6 +11,9 @@ Supabase integration
 
 PLANNED:
 connect with Discord so that when a new chapter is released it pings the user relatively quickly after chapter release.
+
 ReaperScans integration
+
 RealmScans integration
+
 LuminousScans integration
