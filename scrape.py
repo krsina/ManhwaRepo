@@ -10,6 +10,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from pymongo import MongoClient
 from datetime import datetime
+import discord
 
 uri = "mongodb+srv://krisna:raZK8PYUDJK7aFu@cluster0.kyxkdkz.mongodb.net/?retryWrites=true&w=majority"
 # Create a connection using MongoClient
@@ -20,6 +21,13 @@ db = client['library']
 
 # Access the 'books' collection
 collection = db['books']
+
+books = []
+class Book:
+    def __init__(self):
+        self.book_title = ""
+        self.latest_chapter = "" 
+        self.image_url = ""
 
 def insertBook_Document(book_title, book_link, latest_chapter, chapter_number,image_url):
     # Prepare the book document
@@ -35,6 +43,35 @@ def insertBook_Document(book_title, book_link, latest_chapter, chapter_number,im
 
     # Insert the document into the collection   
     collection.insert_one(book_document)
+    message = book_title + " has been added."
+    discordMessage(book_title, latest_chapter, image_url, message)
+
+def discordMessage(book_title, latest_chapter, image_url, message):
+    TOKEN = 'MTEzMjk0MjA5NzA5MjIwMjUxNg.GDqyvz.YCJbui546E_nuz_uTm8IHbkoYT8uRzIXR8eudo'
+    MANHWA_CHANNEL_ID = '1132944497412669460'
+
+    # Create a new Discord client with the specified intents
+    client = discord.Client(intents=discord.Intents.default())
+
+    # Event handler for when the bot is ready and connected to Discord
+    @client.event
+    async def on_ready():
+        print(f'Logged in as {client.user.name}')
+        print('------')
+        channel = client.get_channel(int(MANHWA_CHANNEL_ID))
+        if channel:
+            # Create an embed
+            embed = discord.Embed(
+                title=book_title,
+                description = message
+            )
+            embed.add_field(name="Link:", value=latest_chapter, inline=False)
+            embed.set_image(url=image_url)
+
+            # Send the embed to the specified channel
+            await channel.send(embed=embed)
+            await client.close()
+    client.run(TOKEN)
 
 def updateBook_Document(book_title, book_link, latest_chapter, chapter_number):
     query = {"_id": book_title} 
@@ -48,6 +85,11 @@ def updateBook_Document(book_title, book_link, latest_chapter, chapter_number):
         update_data = {"$set": {"latest_chapter": latest_chapter, "chapter_number": chapter_number, "date_time": date_time}}
         collection.update_one(query, update_data)
         isUpdated = True;
+        new_book = Book()
+        new_book.book_title = book_title
+        new_book.latest_chapter = latest_chapter
+        new_book.image_url = image_url
+        books.append(new_book)
     if(db_book_link != book_link):
         print("New link found, updating book_link...")
         update_data = {"$set": {"book_link": book_link}}
@@ -57,7 +99,6 @@ def updateBook_Document(book_title, book_link, latest_chapter, chapter_number):
         print("Update Complete!")
     else:
         print("Book information is already up to date!")
-        
     
 # Set up Chrome options for running in headless mode
 chrome_options = Options()
@@ -116,6 +157,11 @@ for book_link in book_links:
         updateBook_Document(book_title, book_link, latest_chapter, chapter_number)
 
     print()
+
+if books is not None:
+    for book in books:
+        message = "A new chapter has been released!"
+        discordMessage(book.book_title, book.latest_chapter, book.image_url,message)
 
 driver.quit()
 
