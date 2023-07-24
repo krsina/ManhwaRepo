@@ -21,7 +21,7 @@ db = client['library']
 # Access the 'books' collection
 collection = db['books']
 
-def insertBook_Document(book_title, book_link, latest_chapter, chapter_number):
+def insertBook_Document(book_title, book_link, latest_chapter, chapter_number,image_url):
     # Prepare the book document
     date_time = datetime.now()
     book_document = {
@@ -29,7 +29,8 @@ def insertBook_Document(book_title, book_link, latest_chapter, chapter_number):
     "book_link": book_link,
     "latest_chapter": latest_chapter,
     "chapter_number": chapter_number,
-    "date_time": date_time
+    "date_time": date_time,
+    "image_url": image_url
     }
 
     # Insert the document into the collection   
@@ -85,6 +86,13 @@ for book_link in book_links:
     book_title = book_title_element.text
     print("Book Title:", book_title)
 
+    # Wait for the div with class "thumb" to appear
+    div_locator = (By.CSS_SELECTOR, "div.thumb")  
+    div_element = WebDriverWait(driver, 10).until(EC.presence_of_element_located(div_locator))
+    img_element = div_element.find_element(By.TAG_NAME, "img")
+    image_url = img_element.get_attribute("src")
+
+
     # Get the href attribute of the latest chapter link
     latest_chapter = latest_chapter_link.get_attribute("href")
 
@@ -100,7 +108,7 @@ for book_link in book_links:
     print("Chapter number:", chapter_number)
 
     try:
-        insertBook_Document(book_title, book_link, latest_chapter, chapter_number)
+        insertBook_Document(book_title, book_link, latest_chapter, chapter_number, image_url)
         print("Book inserted into database")
     except Exception as e:
         print("Insertion failed:", book_title ,"is already in database")
@@ -109,7 +117,6 @@ for book_link in book_links:
 
     print()
 
-# Quit the driver
 driver.quit()
 
 
