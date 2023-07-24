@@ -9,24 +9,27 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from pymongo import MongoClient
+from datetime import datetime
 
 uri = "mongodb+srv://krisna:raZK8PYUDJK7aFu@cluster0.kyxkdkz.mongodb.net/?retryWrites=true&w=majority"
-# Create a connection using MongoClient. You can import MongoClient or use pymongo.MongoClient
+# Create a connection using MongoClient
 client = MongoClient(uri)
 
-# Access the 'library' database (replace 'library' with the name of your database)
+# Access the 'library' database
 db = client['library']
 
-# Access the 'books' collection (replace 'books' with the name of your collection)
+# Access the 'books' collection
 collection = db['books']
 
 def insertBook_Document(book_title, book_link, latest_chapter, chapter_number):
     # Prepare the book document
+    date_time = datetime.now()
     book_document = {
     "_id": book_title,
     "book_link": book_link,
     "latest_chapter": latest_chapter,
-    "chapter_number": chapter_number
+    "chapter_number": chapter_number,
+    "date_time": date_time
     }
 
     # Insert the document into the collection   
@@ -39,8 +42,9 @@ def updateBook_Document(book_title, book_link, latest_chapter, chapter_number):
     db_book_link = book.get("book_link")
     isUpdated = False;
     if(chapter_number != db_chapter_number):
-        print("New chapter found, updating latest_chapter and chapter_number...")
-        update_data = {"$set": {"latest_chapter": latest_chapter, "chapter_number": chapter_number}}
+        date_time = datetime.now()
+        print("New chapter found, updating latest_chapter, chapter_number, and date_time...")
+        update_data = {"$set": {"latest_chapter": latest_chapter, "chapter_number": chapter_number, "date_time": date_time}}
         collection.update_one(query, update_data)
         isUpdated = True;
     if(db_book_link != book_link):
@@ -97,6 +101,7 @@ for book_link in book_links:
 
     try:
         insertBook_Document(book_title, book_link, latest_chapter, chapter_number)
+        print("Book inserted into database")
     except Exception as e:
         print("Insertion failed:", book_title ,"is already in database")
         print("Checking if book_document is up to date...")
