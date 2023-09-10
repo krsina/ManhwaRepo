@@ -132,18 +132,12 @@ for book_link in book_links:
     div_element = WebDriverWait(driver, 10).until(EC.presence_of_element_located(div_locator))
     img_element = div_element.find_element(By.TAG_NAME, "img")
     image_url = img_element.get_attribute("src")
-
-
     # Get the href attribute of the latest chapter link
     latest_chapter = latest_chapter_link.get_attribute("href")
-
     # Remove the trailing slash from the latest_chapter
     latest_chapter = latest_chapter[:-1]
-
     # Extract the chapter number from the link
     chapter_number = latest_chapter.split("-")[-1]
-
-    # Print the latest chapter link and number
     print("Book:", book_link)
     print("Latest chapter:", latest_chapter)
     print("Chapter number:", chapter_number)
