@@ -111,7 +111,7 @@ for book_link in book_links:
     div_locator = (By.CSS_SELECTOR, "div.thumb")  
     div_element = WebDriverWait(driver, 10).until(EC.presence_of_element_located(div_locator))
     img_element = div_element.find_element(By.TAG_NAME, "img")
-    image_url = img_element.get_attribute("src").replace('https://img.asuracomics.com/unsafe/fit-in/720x936/', '')
+    image_url = img_element.get_attribute("src").replace('https://', '')
     # Get the href attribute of the latest chapter link
     latest_chapter = latest_chapter_link.get_attribute("href")
     # Remove the trailing slash from the latest_chapter
