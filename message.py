@@ -3,12 +3,15 @@ import json
 
 client = discord.Client(intents=discord.Intents.default())
 
-with open('secrets.json') as f:
+# Load the secrets from the secret.json file
+with open('secret.json') as f:
     secrets = json.load(f)
 
+# Access the bot and channel id
 TOKEN = secrets['DISCORD_KEY'];
 MANHWA_CHANNEL_ID = secrets['DISCORD_CHANNEL_ID'];
 
+# Sends a message to the specified channel
 def discordMessage(book_title, latest_chapter, image_url, message):
     # Create a new Discord client with the specified intents
     # Event handler for when the bot is ready and connected to Discord
