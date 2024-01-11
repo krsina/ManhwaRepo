@@ -10,9 +10,16 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from pymongo import MongoClient
 from datetime import datetime
-import discord
+from message import discordMessage
+import json
 
-uri = "mongodb+srv://krisna:raZK8PYUDJK7aFu@cluster0.kyxkdkz.mongodb.net/?retryWrites=true&w=majority"
+# Load the secrets.json file
+with open('secrets.json') as f:
+    secrets = json.load(f)
+
+# Access the uri
+uri = secrets['MONGODB_URI']
+
 # Create a connection using MongoClient
 client = MongoClient(uri)
 
@@ -33,7 +40,7 @@ def insertBook_Document(book_title, book_link, latest_chapter, chapter_number,im
     # Prepare the book document
     date_time = datetime.now()
     book_document = {
-    "_id": book_title,
+    "_id": book_title,  
     "book_link": book_link,
     "latest_chapter": latest_chapter,
     "chapter_number": chapter_number,
@@ -45,33 +52,6 @@ def insertBook_Document(book_title, book_link, latest_chapter, chapter_number,im
     collection.insert_one(book_document)
     message = book_title + " has been added."
     discordMessage(book_title, latest_chapter, image_url, message)
-
-def discordMessage(book_title, latest_chapter, image_url, message):
-    TOKEN = 'MTEzMjk0MjA5NzA5MjIwMjUxNg.GDqyvz.YCJbui546E_nuz_uTm8IHbkoYT8uRzIXR8eudo'
-    MANHWA_CHANNEL_ID = '1132944497412669460'
-
-    # Create a new Discord client with the specified intents
-    client = discord.Client(intents=discord.Intents.default())
-
-    # Event handler for when the bot is ready and connected to Discord
-    @client.event
-    async def on_ready():
-        print(f'Logged in as {client.user.name}')
-        print('------')
-        channel = client.get_channel(int(MANHWA_CHANNEL_ID))
-        if channel:
-            # Create an embed
-            embed = discord.Embed(
-                title=book_title,
-                description = message
-            )
-            embed.add_field(name="Link:", value=latest_chapter, inline=False)
-            embed.set_image(url=image_url)
-
-            # Send the embed to the specified channel
-            await channel.send(embed=embed)
-            await client.close()
-    client.run(TOKEN)
 
 def updateBook_Document(book_title, book_link, latest_chapter, chapter_number):
     query = {"_id": book_title} 
@@ -131,19 +111,13 @@ for book_link in book_links:
     div_locator = (By.CSS_SELECTOR, "div.thumb")  
     div_element = WebDriverWait(driver, 10).until(EC.presence_of_element_located(div_locator))
     img_element = div_element.find_element(By.TAG_NAME, "img")
-    image_url = img_element.get_attribute("src")
-
-
+    image_url = img_element.get_attribute("src").replace('https://img.asuracomics.com/unsafe/fit-in/720x936/', '')
     # Get the href attribute of the latest chapter link
     latest_chapter = latest_chapter_link.get_attribute("href")
-
     # Remove the trailing slash from the latest_chapter
     latest_chapter = latest_chapter[:-1]
-
     # Extract the chapter number from the link
     chapter_number = latest_chapter.split("-")[-1]
-
-    # Print the latest chapter link and number
     print("Book:", book_link)
     print("Latest chapter:", latest_chapter)
     print("Chapter number:", chapter_number)
@@ -161,8 +135,7 @@ for book_link in book_links:
 if books is not None:
     for book in books:
         message = "A new chapter has been released!"
+        print(book.image_url)
         discordMessage(book.book_title, book.latest_chapter, book.image_url,message)
 
 driver.quit()
-
-
