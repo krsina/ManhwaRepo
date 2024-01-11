@@ -16,19 +16,15 @@ import json
 # Load the secrets.json file
 with open('secrets.json') as f:
     secrets = json.load(f)
-
 # Access the uri
 uri = secrets['MONGODB_URI']
-
 # Create a connection using MongoClient
 client = MongoClient(uri)
-
 # Access the 'library' database
 db = client['library']
-
 # Access the 'books' collection
 collection = db['books']
-
+# Book Object
 books = []
 class Book:
     def __init__(self):
@@ -36,6 +32,7 @@ class Book:
         self.latest_chapter = "" 
         self.image_url = ""
 
+#Inserts a book document into the database
 def insertBook_Document(book_title, book_link, latest_chapter, chapter_number,image_url):
     # Prepare the book document
     date_time = datetime.now()
