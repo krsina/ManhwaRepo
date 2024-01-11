@@ -13,8 +13,8 @@ from datetime import datetime
 from message import discordMessage
 import json
 
-# Load the secrets.json file
-with open('secrets.json') as f:
+# Load the secret.json file
+with open('secret.json') as f:
     secrets = json.load(f)
 # Access the uri
 uri = secrets['MONGODB_URI']
