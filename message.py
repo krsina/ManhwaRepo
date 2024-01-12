@@ -1,5 +1,4 @@
 import discord
-import json
 
 class DiscordBot:
     def __init__(self, token, channel_id,books):
@@ -16,6 +15,7 @@ class DiscordBot:
             if channel:
                 for book in books:
                     await self.send_message(channel, book.book_title, book.message, book.latest_chapter, book.image_url)
+                await self.client.close()
 
     async def send_message(self, channel, title, description, link, image_url):
         embed = discord.Embed(title=title, description=description)
