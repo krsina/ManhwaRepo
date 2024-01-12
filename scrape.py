@@ -10,7 +10,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from pymongo import MongoClient
 from datetime import datetime
-from message import discordMessage
+from message import DiscordBot
 import json
 
 # Load the secret.json file
@@ -24,13 +24,15 @@ client = MongoClient(uri)
 db = client['library']
 # Access the 'books' collection
 collection = db['books']
-# Book Object
+# List of books based on operation
 books = []
+# Book Object
 class Book:
     def __init__(self):
         self.book_title = ""
         self.latest_chapter = "" 
         self.image_url = ""
+        self.message = ""
 
 #Inserts a book document into the database
 def insertBook_Document(book_title, book_link, latest_chapter, chapter_number,image_url):
@@ -47,8 +49,12 @@ def insertBook_Document(book_title, book_link, latest_chapter, chapter_number,im
 
     # Insert the document into the collection   
     collection.insert_one(book_document)
-    message = book_title + " has been added."
-    discordMessage(book_title, latest_chapter, image_url, message)
+    new_book = Book()
+    new_book.book_title = book_title
+    new_book.latest_chapter = latest_chapter
+    new_book.image_url = image_url
+    new_book.message = book_title + " has been added."
+    books.append(new_book);
 
 def updateBook_Document(book_title, book_link, latest_chapter, chapter_number):
     query = {"_id": book_title} 
@@ -66,6 +72,7 @@ def updateBook_Document(book_title, book_link, latest_chapter, chapter_number):
         new_book.book_title = book_title
         new_book.latest_chapter = latest_chapter
         new_book.image_url = image_url
+        new_book.message = " A new chapter has been released!"
         books.append(new_book)
     if(db_book_link != book_link):
         print("New link found, updating book_link...")
@@ -114,6 +121,7 @@ for book_link in book_links:
     # Remove the trailing slash from the latest_chapter
     latest_chapter = latest_chapter[:-1]
     # Extract the chapter number from the link
+    
     chapter_number = latest_chapter.split("-")[-1]
     print("Book:", book_link)
     print("Latest chapter:", latest_chapter)
@@ -128,11 +136,11 @@ for book_link in book_links:
         updateBook_Document(book_title, book_link, latest_chapter, chapter_number)
 
     print()
-
-if books is not None:
-    for book in books:
-        message = "A new chapter has been released!"
-        print(book.image_url)
-        discordMessage(book.book_title, book.latest_chapter, book.image_url,message)
+TOKEN = secrets['DISCORD_KEY'];
+MANHWA_CHANNEL_ID = secrets['DISCORD_CHANNEL_ID'];
+# Create an instance of the DiscordBot class
+bot = DiscordBot(TOKEN, MANHWA_CHANNEL_ID, books)
+# Start the client
+bot.client.run(TOKEN)
 
 driver.quit()
