@@ -1,36 +1,24 @@
 import discord
 import json
 
-client = discord.Client(intents=discord.Intents.default())
+class DiscordBot:
+    def __init__(self, token, channel_id,books):
+        self.token = token
+        self.channel_id = channel_id
+        self.client = discord.Client(intents=discord.Intents.default())
 
-# Load the secrets from the secret.json file
-with open('secret.json') as f:
-    secrets = json.load(f)
+        # Event handler for when the bot is ready and connected to Discord
+        @self.client.event
+        async def on_ready():
+            print(f'Logged in as {self.client.user.name}')
+            print('------')
+            channel = self.client.get_channel(int(self.channel_id))
+            if channel:
+                for book in books:
+                    await self.send_message(channel, book.book_title, book.message, book.latest_chapter, book.image_url)
 
-# Access the bot and channel id
-TOKEN = secrets['DISCORD_KEY'];
-MANHWA_CHANNEL_ID = secrets['DISCORD_CHANNEL_ID'];
-
-# Sends a message to the specified channel
-def discordMessage(book_title, latest_chapter, image_url, message):
-    # Create a new Discord client with the specified intents
-    # Event handler for when the bot is ready and connected to Discord
-    @client.event
-    async def on_ready():
-        print(f'Logged in as {client.user.name}')
-        print('------')
-        channel = client.get_channel(int(MANHWA_CHANNEL_ID))
-        if channel:
-            # Create an embed
-            embed = discord.Embed(
-                title=book_title,
-                description = message
-            )
-            embed.add_field(name="Link:", value=latest_chapter, inline=False)
-            embed.set_image(url=image_url)
-            print(image_url)
-
-            # Send the embed to the specified channel
-            await channel.send(embed=embed)
-            await client.close()
-    client.run(TOKEN)
+    async def send_message(self, channel, title, description, link, image_url):
+        embed = discord.Embed(title=title, description=description)
+        embed.add_field(name="Link:", value=link, inline=False)
+        embed.set_image(url=image_url)
+        await channel.send(embed=embed)
