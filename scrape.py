@@ -136,11 +136,13 @@ for book_link in book_links:
         updateBook_Document(book_title, book_link, latest_chapter, chapter_number)
 
     print()
-TOKEN = secrets['DISCORD_KEY'];
-MANHWA_CHANNEL_ID = secrets['DISCORD_CHANNEL_ID'];
-# Create an instance of the DiscordBot class
-bot = DiscordBot(TOKEN, MANHWA_CHANNEL_ID, books)
-# Start the client
-bot.client.run(TOKEN)
+
+if(books):
+    TOKEN = secrets['DISCORD_KEY'];
+    MANHWA_CHANNEL_ID = secrets['DISCORD_CHANNEL_ID'];
+    # Create an instance of the DiscordBot class
+    bot = DiscordBot(TOKEN, MANHWA_CHANNEL_ID, books)
+    # Start the client
+    bot.client.run(TOKEN)
 
 driver.quit()
