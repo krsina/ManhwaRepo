@@ -3,6 +3,13 @@
 ## Overview
 Python script that scrapes information from AsuraScans and stores it in a MongoDB database. Integrated with Discord to send notifications when there are updates to the scraped data.
 
+## Screenshots
+
+![Screenshot 1](https://raw.githubusercontent.com/krsina/ManhwaRepo/main/demo/added.png)
+Message displayed when book is added to MongoDB database.
+![Screenshot 2](https://raw.githubusercontent.com/krsina/ManhwaRepo/main/demo/newchapter.png)
+Message displayed when a new chapter is found.
+
 ## Dependencies
 - `discord.py`: Discord API wrapper for Python
 - `selenium`: Web browser automation tool
