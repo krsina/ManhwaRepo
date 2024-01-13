@@ -5,7 +5,7 @@ Python script that scrapes information from AsuraScans and stores it in a MongoD
 
 ## Screenshots
 
-![Screenshot 1](https://raw.githubusercontent.com/krsina/ManhwaRepo/main/demo/added.png)
+![Screenshot 1](https://github.com/krsina/ManhwaRepo/blob/main/demo/added.PNG?raw=true)
 Message displayed when book is added to MongoDB database.
 ![Screenshot 2](https://raw.githubusercontent.com/krsina/ManhwaRepo/main/demo/newchapter.png)
 Message displayed when a new chapter is found.
