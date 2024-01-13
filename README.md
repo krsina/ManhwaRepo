@@ -7,18 +7,20 @@ Python script that scrapes information from AsuraScans and store it in a MongoDB
 - `discord.py`: Discord API wrapper for Python
 - `selenium`: Web browser automation tool
 - `pymongo`: MongoDB driver for Python
+- `chromedriver`: Driver for Selenium
 
-Install the dependencies using:
-```bash
-pip install discord.py selenium pymongo
 ## Setup
 
-1. **Install ChromeDriver:**
+1. **Install Dependencies:**
    - Download ChromeDriver from [here](https://sites.google.com/chromium.org/driver/).
    - Add file to project root.
+   - Run this command in project root.
+     ```bash
+     pip install discord.py selenium pymongo
+     ```
 
 2. **Create a MongoDB Database:**
-   - Install MongoDB and create a new database named 'library'.
+   - Install MongoDB and create a new database named 'library' with a collection named 'books'.
 
 3. **Set Up Discord Bot:**
    - Create a Discord bot on the [Discord Developer Portal](https://discord.com/developers/applications).
