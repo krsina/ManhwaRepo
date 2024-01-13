@@ -44,7 +44,7 @@ Python script that utilizes Selenium to scrape information from AsuraScans and s
 
 5. **Prepare Book Links:**
    - Create a file named `books.txt` containing AsuraScans book URLs, with each URL on a new line.
-   - All file to project root.
+   - Add file to project root.
 
 6. **Run the Script:**
    - Execute the script by running the following command:
