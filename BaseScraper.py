@@ -29,12 +29,6 @@ class BaseScraper:
     def _get_attribute(self, element, tag_name, attribute):
         return element.find_element(By.TAG_NAME, tag_name).get_attribute(attribute)
 
-    def create_scraper_instance(self, config):
-        if config['site'] == 'asura':
-            return AsuraScraper(config)
-        elif config['site'] == 'realm':
-            return RealmScraper(config)
-
     def scrape(self):
         for book_link in self.book_links:
             self.driver.get(book_link)
@@ -45,6 +39,14 @@ class BaseScraper:
 
     def close(self):
         self.driver.quit()
+
+def create_scraper_instance(config):
+    if config['site'] == 'asura':
+        return AsuraScraper(config)
+    elif config['site'] == 'genz':
+        return GenZScraper(config)
+    else:
+        raise ValueError(f"Unknown site: {config['site']}")
 
 class AsuraScraper(BaseScraper):
     def scrape_book_details(self):
@@ -60,7 +62,27 @@ class AsuraScraper(BaseScraper):
         print("Chapter Number:", chapter_number)
         print()
 
-class RealmScraper(BaseScraper):
+class GenZScraper(BaseScraper):
     def scrape_book_details(self):
-        # TODO: Implement RealmScraper
-        pass
+        # Open the URL
+        self.driver.get("https://snowmtl.ru/comics/time-limited-genius-dark-knight")  # Replace with the actual URL
+
+        # Print the entire page source for debugging
+        print("Page Source:")
+        print(self.driver.page_source)
+        
+        # Wait for the page to fully load
+        try:
+            WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'h1.entry-title[itemprop="name"]')))
+        except Exception as e:
+            print(f"Error waiting for book title element: {e}")
+        
+        # Try to get the book title element
+        try:
+            book_title_element = self._get_element((By.CSS_SELECTOR, 'h1.entry-title[itemprop="name"]'))
+            book_title = book_title_element.text
+            print("Book Title:", book_title)
+        except Exception as e:
+            print(f"Error finding book title element: {e}")
+
+        print()
