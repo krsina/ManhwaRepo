@@ -1,5 +1,4 @@
 # ManhwaRepo
-## 8:55 PM 1/8/2025 PST RIP project. I realized every site I wanted to scrape uses Cloudflare and since I self-host I will get banned so don't see a point in continuing :/
 ## Overview
 Python script that utilizes Selenium to scrape information from AsuraScans and stores it in a MongoDB database. Integrated with Discord to send notifications when there are updates to the scraped data.
 
